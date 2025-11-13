@@ -15,11 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from base.views import StudentApi, LoginAPI, signup, AddToCartAPI
 from django.http import JsonResponse
 from base.views import ProductAPI
+from rest_framework.routers import DefaultRouter 
+from base.views import ProductViewSet
+from base.views import ProductDeleteView
  
+router = DefaultRouter()
+router.register('products', ProductViewSet)
+
 def home(request):
     return JsonResponse({"message": "Welcome to the API"})
 urlpatterns = [
@@ -29,6 +35,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cart/', AddToCartAPI.as_view()),
     path('product/', ProductAPI.as_view()),
+    path('api/', include(router.urls)),
+    path('product/delete/<int:pk>/', ProductDeleteView.as_view(), name='product-delete'),
 
 ]
 

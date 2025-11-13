@@ -11,6 +11,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework.decorators import api_view
 from .models import Cart, Product
 from .serializers import CartSerializer, ProductSerializer
+from rest_framework import viewsets, status
 
 
 class StudentApi(APIView):
@@ -127,3 +128,19 @@ class ProductAPI(APIView):
             serializer.save()
             return Response({"status": True, "data": serializer.data, "message": "Product added successfully"})
         return Response({"status": False, "data": serializer.errors, "message": "Failed to add product"})
+    
+    
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    
+    
+class ProductDeleteView(APIView):
+    def delete(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+            product.delete()
+            return Response({'message': 'Product deleted successfully!'},status=status.HTTP_204_NO_CONTENT)
+        except Product.DoesNotExist:
+            return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
