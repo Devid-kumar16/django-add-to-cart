@@ -1,27 +1,18 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import (
-    CategoryViewSet, ProductViewSet, DiscountViewSet,
-    AddressViewSet, CartView, CartAddItem, CartUpdateItem,
-    CreateOrderAPI, OrderListAPI, PaymentCreateAPI,
-    signup, LoginAPI
-)
-
-router = DefaultRouter()
-router.register(r'categories', CategoryViewSet, basename='category')
-router.register(r'products', ProductViewSet, basename='product')
-router.register(r'discounts', DiscountViewSet, basename='discount')
-router.register(r'addresses', AddressViewSet, basename='address')
-
+from django.urls import path
+from .views import *
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('signup/', signup, name='signup'),
-    path('login/', LoginAPI.as_view(), name='login'),
-    path('cart/', CartView.as_view(), name='cart'),
-    path('cart/add/', CartAddItem.as_view(), name='cart-add'),
-    path('cart/item/<uuid:item_id>/', CartUpdateItem.as_view(), name='cart-item-update'),
-    path('orders/create/', CreateOrderAPI.as_view(), name='create-order'),
-    path('orders/', OrderListAPI.as_view(), name='orders-list'),
-    path('orders/<uuid:order_id>/pay/', PaymentCreateAPI.as_view(), name='order-pay'),
+    path('signup/', SignupView.as_view()),
+    path('login/', LoginView.as_view()),
+    path('address/', AddressView.as_view()),
+    path('product/', ProductView.as_view()),
+    path('cart/add/', AddToCartView.as_view()),
+    path('cart/update/<int:cart_item_id>/', UpdateCartItemView.as_view()),
+    path('cart/delete/<int:cart_item_id>/', DeleteCartItemView.as_view()),
+    path('cart/clear/<int:user_id>/', ClearCartView.as_view()),
+    path('order/', OrderView.as_view()),
+    path('order-item/', OrderItemView.as_view()),
+    path('payment/', PaymentView.as_view()),
+    path('logout/', LogoutView.as_view()),
+
 ]
